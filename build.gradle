@@ -1,11 +1,12 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.4.1'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id "java"
+    id "org.springframework.boot" version "3.4.1"
+    id "io.spring.dependency-management" version "1.1.7"
+    id "org.jooq.jooq-codegen-gradle" version "3.19.16"
 }
 
-group = 'com.schedlo.postlinker'
-version = '0.0.1-SNAPSHOT'
+group = "com.schedlo.postlinker"
+version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
@@ -23,14 +24,62 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+jar {
+    manifest {
+        attributes "Main-Class": "com.schedlo.postlinker.App"
+    }
 }
 
-tasks.named('test') {
+jooq {
+    configuration {
+        jdbc {
+            driver = "com.mysql.cj.jdbc.Driver"
+            url = "jdbc:mysql://localhost:3306/app"
+            user = "root"
+            password = "root"
+        }
+        generator {
+            database {
+                name = "org.jooq.meta.mysql.MySQLDatabase"
+                schemata {
+                    schema {
+                        inputSchema = "app"
+                    }
+                }
+            }
+            target {
+                directory = "$projectDir/src/main/java"
+                packageName = "com.schedlo.postlinker.dao"
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-jooq"
+    implementation "com.mysql:mysql-connector-j:8.4.0"
+
+    implementation "org.liquibase:liquibase-core"
+    annotationProcessor "org.projectlombok:lombok"
+    compileOnly "org.projectlombok:lombok"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    jooqCodegen "com.mysql:mysql-connector-j:8.4.0"
+}
+
+tasks.named("test") {
     useJUnitPlatform()
+}
+
+def gradlew = System.getProperty("os.name").toLowerCase().contains("win") ? "gradlew.bat" : "./gradlew"
+
+tasks.register("composeUp", Exec) {
+    commandLine "docker-compose", "up"
+}
+
+tasks.register("dockerStart", Exec) {
+    commandLine gradlew, "clean", "assemble", "composeUp"
 }
