@@ -6,6 +6,10 @@ package com.schedlo.postlinker.dao;
 
 import com.schedlo.postlinker.dao.tables.Databasechangelog;
 import com.schedlo.postlinker.dao.tables.Databasechangeloglock;
+import com.schedlo.postlinker.dao.tables.Media;
+import com.schedlo.postlinker.dao.tables.Post;
+import com.schedlo.postlinker.dao.tables.PostMedia;
+import com.schedlo.postlinker.dao.tables.User;
 
 
 /**
@@ -23,4 +27,24 @@ public class Tables {
      * The table <code>app.databasechangeloglock</code>.
      */
     public static final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
+
+    /**
+     * The table <code>app.media</code>.
+     */
+    public static final Media MEDIA = Media.MEDIA;
+
+    /**
+     * The table <code>app.post</code>.
+     */
+    public static final Post POST = Post.POST;
+
+    /**
+     * The table <code>app.post_media</code>.
+     */
+    public static final PostMedia POST_MEDIA = PostMedia.POST_MEDIA;
+
+    /**
+     * The table <code>app.user</code>.
+     */
+    public static final User USER = User.USER;
 }
