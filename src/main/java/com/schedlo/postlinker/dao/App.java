@@ -6,6 +6,10 @@ package com.schedlo.postlinker.dao;
 
 import com.schedlo.postlinker.dao.tables.Databasechangelog;
 import com.schedlo.postlinker.dao.tables.Databasechangeloglock;
+import com.schedlo.postlinker.dao.tables.Media;
+import com.schedlo.postlinker.dao.tables.Post;
+import com.schedlo.postlinker.dao.tables.PostMedia;
+import com.schedlo.postlinker.dao.tables.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +43,26 @@ public class App extends SchemaImpl {
     public final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
     /**
+     * The table <code>app.media</code>.
+     */
+    public final Media MEDIA = Media.MEDIA;
+
+    /**
+     * The table <code>app.post</code>.
+     */
+    public final Post POST = Post.POST;
+
+    /**
+     * The table <code>app.post_media</code>.
+     */
+    public final PostMedia POST_MEDIA = PostMedia.POST_MEDIA;
+
+    /**
+     * The table <code>app.user</code>.
+     */
+    public final User USER = User.USER;
+
+    /**
      * No further instances allowed
      */
     private App() {
@@ -55,7 +79,11 @@ public class App extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             Databasechangelog.DATABASECHANGELOG,
-            Databasechangeloglock.DATABASECHANGELOGLOCK
+            Databasechangeloglock.DATABASECHANGELOGLOCK,
+            Media.MEDIA,
+            Post.POST,
+            PostMedia.POST_MEDIA,
+            User.USER
         );
     }
 }

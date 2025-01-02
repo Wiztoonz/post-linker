@@ -4,4 +4,160 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="create user table" author="olegrosynskyi">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="user"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user">
+            <column name="is_deleted" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="date_created" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_updated" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="create media table" author="olegrosynskyi">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="media"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="media">
+            <column name="is_deleted" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="media_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_url" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="width" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="height" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration" type="DECIMAL(10,2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="file_size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_updated" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_media_type_date_updated" tableName="media">
+            <column name="media_type"/>
+            <column name="date_updated"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create post table" author="olegrosynskyi">
+        <preConditions onError="MARK_RAN">
+            <not>
+                <tableExists tableName="post"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="post">
+            <column name="is_deleted" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="message" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="date_created" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_updated" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_post_user_id"
+                baseTableName="post"
+                baseColumnNames="user_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="create post_media table" author="olegrosynskyi">
+        <preConditions onError="MARK_RAN">
+            <and>
+                <not>
+                    <tableExists tableName="post_media"/>
+                </not>
+                <tableExists tableName="post"/>
+                <tableExists tableName="media"/>
+            </and>
+        </preConditions>
+
+        <createTable tableName="post_media">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_post_media_post_id"
+                baseTableName="post_media"
+                baseColumnNames="post_id"
+                referencedTableName="post"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_post_media_media_id"
+                baseTableName="post_media"
+                baseColumnNames="media_id"
+                referencedTableName="media"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>

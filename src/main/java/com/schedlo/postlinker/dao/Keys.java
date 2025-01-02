@@ -5,8 +5,17 @@ package com.schedlo.postlinker.dao;
 
 
 import com.schedlo.postlinker.dao.tables.Databasechangeloglock;
+import com.schedlo.postlinker.dao.tables.Media;
+import com.schedlo.postlinker.dao.tables.Post;
+import com.schedlo.postlinker.dao.tables.PostMedia;
+import com.schedlo.postlinker.dao.tables.User;
 import com.schedlo.postlinker.dao.tables.records.DatabasechangeloglockRecord;
+import com.schedlo.postlinker.dao.tables.records.MediaRecord;
+import com.schedlo.postlinker.dao.tables.records.PostMediaRecord;
+import com.schedlo.postlinker.dao.tables.records.PostRecord;
+import com.schedlo.postlinker.dao.tables.records.UserRecord;
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -24,4 +33,17 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<DatabasechangeloglockRecord> KEY_DATABASECHANGELOGLOCK_PRIMARY = Internal.createUniqueKey(Databasechangeloglock.DATABASECHANGELOGLOCK, DSL.name("KEY_databasechangeloglock_PRIMARY"), new TableField[] { Databasechangeloglock.DATABASECHANGELOGLOCK.ID }, true);
+    public static final UniqueKey<MediaRecord> KEY_MEDIA_PRIMARY = Internal.createUniqueKey(Media.MEDIA, DSL.name("KEY_media_PRIMARY"), new TableField[] { Media.MEDIA.ID }, true);
+    public static final UniqueKey<PostRecord> KEY_POST_PRIMARY = Internal.createUniqueKey(Post.POST, DSL.name("KEY_post_PRIMARY"), new TableField[] { Post.POST.ID }, true);
+    public static final UniqueKey<PostMediaRecord> KEY_POST_MEDIA_PRIMARY = Internal.createUniqueKey(PostMedia.POST_MEDIA, DSL.name("KEY_post_media_PRIMARY"), new TableField[] { PostMedia.POST_MEDIA.ID }, true);
+    public static final UniqueKey<UserRecord> KEY_USER_EMAIL = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_email"), new TableField[] { User.USER.EMAIL }, true);
+    public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_PRIMARY"), new TableField[] { User.USER.ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<PostRecord, UserRecord> FK_POST_USER_ID = Internal.createForeignKey(Post.POST, DSL.name("fk_post_user_id"), new TableField[] { Post.POST.USER_ID }, Keys.KEY_USER_PRIMARY, new TableField[] { User.USER.ID }, true);
+    public static final ForeignKey<PostMediaRecord, MediaRecord> FK_POST_MEDIA_MEDIA_ID = Internal.createForeignKey(PostMedia.POST_MEDIA, DSL.name("fk_post_media_media_id"), new TableField[] { PostMedia.POST_MEDIA.MEDIA_ID }, Keys.KEY_MEDIA_PRIMARY, new TableField[] { Media.MEDIA.ID }, true);
+    public static final ForeignKey<PostMediaRecord, PostRecord> FK_POST_MEDIA_POST_ID = Internal.createForeignKey(PostMedia.POST_MEDIA, DSL.name("fk_post_media_post_id"), new TableField[] { PostMedia.POST_MEDIA.POST_ID }, Keys.KEY_POST_PRIMARY, new TableField[] { Post.POST.ID }, true);
 }
